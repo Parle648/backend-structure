@@ -1,0 +1,390 @@
+{
+	"info": {
+		"_postman_id": "b82d0ca6-e034-4b18-b417-071b6c62b991",
+		"name": "BSA Backend Structure",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2166065"
+	},
+	"item": [
+		{
+			"name": "/health",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:{{port}}/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (responseCode.code === 200) {",
+							"    const jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"token\", jsonData.accessToken);",
+							"    postman.setEnvironmentVariable(\"userId\", jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{$randomUUID}}\",\n    \"type\": \"admin\",\n    \"email\": \"exampl2222e@gmail.com\",\n    \"phone\": \"+380511679919\",\n    \"name\": \"Alex\",\n    \"city\": \"Kherson\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (responseCode.code === 200) {",
+							"    const jsonData = JSON.parse(responseBody);",
+							"    postman.setEnvironmentVariable(\"token\", jsonData.accessToken);",
+							"    postman.setEnvironmentVariable(\"userId\", jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{$randomUUID}}\",\n    \"type\": \"client\",\n    \"email\": \"exampl3333e@gmail.com\",\n    \"phone\": \"+380511679920\",\n    \"name\": \"Alex\",\n    \"city\": \"Kherson\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users/:id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:{{port}}/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users/:id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"city\": \"Kherson3\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/users/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"users",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/transactions",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{$randomUUID}}\",\n    \"userId\": \"{{userId}}\",\n    \"cardNumber\": \"111111111111\",\n    \"amount\": 50\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (responseCode.code === 200) {\r",
+							"    const jsonData = JSON.parse(responseBody);\r",
+							"    postman.setEnvironmentVariable(\"eventId\", jsonData.id);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"football\",\n    \"homeTeam\": \"Ukraine\",\n    \"awayTeam\": \"Netherlands\",\n    \"startAt\": \"2021-06-13T22:22:09.900Z\",\n    \"odds\": {\n        \"homeWin\": 1.2,\n        \"awayWin\": 3.0,\n        \"draw\": \"2.8\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bets",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"eventId\": \"{{eventId}}\",\n    \"betAmount\": 50,\n    \"prediction\": \"w1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/bets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"bets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"score\": \"1:2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{port}}/events/{{eventId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"events",
+						"{{eventId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/stats",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:{{port}}/stats",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{port}}",
+					"path": [
+						"stats"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
