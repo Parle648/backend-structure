@@ -1,13 +1,14 @@
 var knex = require("knex");
 const dbConfig = require("../knexfile");
-const db = knex(dbConfig.development);
 var jwt = require("jsonwebtoken");
 var ee = require('events');
+const db = knex(dbConfig.development);
 var statEmitter = new ee();
+const createErrorObject = require("../helpers/createErrorObject");
 
 const database = {
     user: {
-        getOne: (id) => {
+        getOne: async (id) => {
             return db("user").where('id', id).returning("*").then(([result]) => {
                 if(!result) {
                     return {
@@ -19,7 +20,7 @@ const database = {
                 return result;
             }); 
         },
-        create: (userDTO) => {
+        create: async (userDTO) => {
             return db("user").insert(userDTO).returning("*").then(([result]) => {
                 result.createdAt = result.created_at;
                 delete result.created_at;
@@ -32,39 +33,17 @@ const database = {
                     accessToken: jwt.sign({ id: result.id, type: result.type }, process.env.JWT_SECRET),
                 };
             }).catch(err => {
-                // todo separate helper
-                if(err.code == '23505') {
-                    return {
-                        status: 400,
-                        error: err.detail
-                    }
-                }
-                return {
-                    status: 500,
-                    error: "Internal servier error"
-                }
+                createErrorObject(err)
             });
         },
-        update: (id, userDTO) => {
+        update: async (id, userDTO) => {
             return db("user").where('id', id).update(userDTO).returning("*").then(([result]) => {
                 return { 
                     result: {...result},
                     status: 200,
                 };
             }).catch(err => {
-                // todo separate helper
-                if(err.code == '23505') {
-                    console.log(err);
-                    return {
-                        status: 400,
-                        error: err.detail
-                    };
-                }
-                console.log(err);
-                return {
-                    status: 500,
-                    error: "Internal Server Error"
-                };
+                createErrorObject(err)
             });
         }
     },
