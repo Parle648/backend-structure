@@ -7,13 +7,14 @@ const postEvent = require("./event/postEvent");
 const postBet = require("./bet/postBet");
 const getStats = require("./stat/getStats");
 const postTransaction = require("./transaction/postTransaction");
+const userService = require("../services/user.service");
 
 const applicationApi = (Router) => {
     const apiRouter = Router();
 
     apiRouter.use(
         API_PATHS.USER_ROUTE,
-        getUser(Router)
+        getUser(Router, userService.getUser)
     );
 
     apiRouter.use(

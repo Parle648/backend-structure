@@ -1,11 +1,9 @@
-getUser = (Router, id) => {
+getUser = (Router, userService) => {
     const router = Router();
 
     router
       .get('/:id', (req, res) => {
-        console.log(123);
-        console.log(123);
-        return res.send({message: `get user with id "UUID"`})
+        return userService(req, res, req.params.id);
       })
 
     return router;
