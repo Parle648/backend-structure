@@ -19,7 +19,7 @@ const applicationApi = (Router) => {
 
     apiRouter.use(
         API_PATHS.USER_ROUTE,
-        postUser(Router)
+        postUser(Router, userService.postUser)
     );
 
     apiRouter.use(

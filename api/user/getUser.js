@@ -1,9 +1,9 @@
-getUser = (Router, userService) => {
+getUser = (Router, getUserService) => {
     const router = Router();
 
     router
       .get('/:id', (req, res) => {
-        return userService(req, res, req.params.id);
+        return getUserService(req, res, req.params.id);
       })
 
     return router;

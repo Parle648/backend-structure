@@ -1,9 +1,9 @@
-const postUser = (Router) => {
+const postUser = (Router, postUseService) => {
     const router = Router();
 
     router
       .post('/', (req, res) => {
-        return res.send({message: 'user created'})
+        return postUseService(req, res)
       })
     
     return router;
