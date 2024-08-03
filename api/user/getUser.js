@@ -1,11 +1,12 @@
-getUser = (Router, id) => {
+const SCHEMAS = require("../../common/const/schemas");
+const { validateParams } = require("../../middlewares/requestValidation/schemaValidation");
+
+getUser = (Router, getUserService) => {
     const router = Router();
 
     router
-      .get('/:id', (req, res) => {
-        console.log(123);
-        console.log(123);
-        return res.send({message: `get user with id "UUID"`})
+      .get('/:id', validateParams(SCHEMAS.USER.GET_ONE), (req, res) => {
+        return getUserService(req, res, req.params.id);
       })
 
     return router;
