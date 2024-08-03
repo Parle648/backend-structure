@@ -1,6 +1,4 @@
 const database = require("../db/db");
-const SCHEMAS = require("../common/const/schemas");
-const jwt = require("jsonwebtoken")
 
 const userService = {
     getUser: async (req, res, id) => {

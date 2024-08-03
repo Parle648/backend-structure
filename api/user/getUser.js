@@ -5,7 +5,7 @@ getUser = (Router, getUserService) => {
     const router = Router();
 
     router
-      .get('/:id', (req, res, next) => validateParams(req, res, next, SCHEMAS.USER.GET_ONE), (req, res) => {
+      .get('/:id', validateParams(SCHEMAS.USER.GET_ONE), (req, res) => {
         return getUserService(req, res, req.params.id);
       })
 

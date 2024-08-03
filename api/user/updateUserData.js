@@ -7,8 +7,8 @@ const updateUserData = (Router, updateUserService) => {
 
     router
       .put('/:id', 
-        (req, res, next) => validateBody(req, res, next, SCHEMAS.USER.UPDATE), 
-        (req, res, next) => tokenValidation(req, res, next), 
+        validateBody(SCHEMAS.USER.UPDATE), 
+        tokenValidation(), 
         (req, res) => {
           return updateUserService(req, res)
         })
