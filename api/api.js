@@ -24,7 +24,7 @@ const applicationApi = (Router) => {
 
     apiRouter.use(
         API_PATHS.USER_ROUTE,
-        updateUserData(Router)
+        updateUserData(Router, userService.updateUser)
     )
 
     apiRouter.use(

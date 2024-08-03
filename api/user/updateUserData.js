@@ -1,9 +1,9 @@
-const updateUserData = (Router) => {
+const updateUserData = (Router, updateUserService) => {
     const router = Router();
 
     router
       .put('/:id', (req, res) => {
-        return res.send({message: 'user was successfully updated'})
+        return updateUserService(req, res)
       })
 
     return router;
