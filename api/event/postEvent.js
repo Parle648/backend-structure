@@ -1,9 +1,17 @@
-const postEvent = (Router) => {
+const SCHEMAS = require("../../common/const/schemas");
+const TOKEN_VALIDATION_TYPE = require("../../common/enums/validationTypes");
+const { validateBody } = require("../../middlewares/requestValidation/schemaValidation");
+const tokenValidation = require("../../middlewares/tokenValidation/tokenValidation");
+
+const postEvent = (Router, postEventService) => {
     const router = Router();
 
     router
-      .post('/', (req, res) => {
-        return res.send({message: `event was created successfully`})
+      .post('/', 
+        validateBody(SCHEMAS.EVENT.POST),
+        tokenValidation(TOKEN_VALIDATION_TYPE.IS_ADMIN),
+        (req, res) => {
+        return postEventService(req, res)
       })
 
     return router;

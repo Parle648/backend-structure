@@ -8,6 +8,7 @@ const postBet = require("./bet/postBet");
 const getStats = require("./stat/getStats");
 const postTransaction = require("./transaction/postTransaction");
 const userService = require("../services/user.service");
+const eventService = require("../services/event.service")
 
 const applicationApi = (Router) => {
     const apiRouter = Router();
@@ -34,7 +35,7 @@ const applicationApi = (Router) => {
 
     apiRouter.use(
         API_PATHS.EVENT_ROUTE,
-        postEvent(Router)
+        postEvent(Router, eventService.postEvent)
     )
 
     apiRouter.use(
