@@ -1,10 +1,8 @@
 var express = require("express");
-var knex = require("knex");
-var jwt = require("jsonwebtoken");
-var joi = require('joi');
+// var knex = require("knex");
 var ee = require('events');
 
-var dbConfig = require("./knexfile");
+// var dbConfig = require("./knexfile");
 const applicationApi = require("./api/api");
 var app = express();
 
@@ -17,16 +15,16 @@ var stats = {
   totalEvents: 1,
 };
 
-var db;
+// var db;
 app.use(express.json());
-app.use((uselessRequest, uselessResponse, neededNext) => {
-  db = knex(dbConfig.development);
-  db.raw('select 1+1 as result').then(function () {
-    neededNext();
-  }).catch(() => {
-    throw new Error('No db connection');
-  });
-});
+// app.use((uselessRequest, uselessResponse, neededNext) => {
+//   db = knex(dbConfig.development);
+//   db.raw('select 1+1 as result').then(function () {
+//     neededNext();
+//   }).catch(() => {
+//     throw new Error('No db connection');
+//   });
+// });
 
 app.use('/', applicationApi(express.Router))
 

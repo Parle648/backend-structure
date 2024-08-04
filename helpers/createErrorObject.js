@@ -1,12 +1,12 @@
 const createErrorObject = (error) => {
-    if(err.code == '23505') {
-        console.log(err);
+    if(error.code == '23505') {
+        console.log(error);
         return {
             status: 400,
-            error: err.detail
+            error: error.detail
         };
     }
-    console.log(err);
+    console.log(error);
     return {
         status: 500,
         error: "Internal Server Error"
