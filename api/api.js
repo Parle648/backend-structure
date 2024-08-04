@@ -30,7 +30,7 @@ const applicationApi = (Router) => {
 
     apiRouter.use(
         API_PATHS.EVENT_ROUTE,
-        modifyEvent(Router)
+        modifyEvent(Router, eventService.putEvent)
     )
 
     apiRouter.use(

@@ -33,6 +33,9 @@ const SCHEMAS = {
                 draw: joi.number().min(1.01).required(),
             }).required(),
         }).required(),
+        PUT: joi.object({
+            score: joi.string().required(),
+        }).required(),
     }
 }
 

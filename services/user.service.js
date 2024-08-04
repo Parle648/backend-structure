@@ -20,7 +20,7 @@ const userService = {
             
             const user = await database.user.create(req.body);
     
-            return user.error 
+            return user.status >= 400 
             ? res.status(404).send({error: user.error}) 
             : res.send({...user});
         } catch (error) {
