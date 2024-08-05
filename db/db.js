@@ -21,16 +21,7 @@ const database = {
         },
         create: async (userDTO) => {
             return db("user").insert(userDTO).returning("*").then(([result]) => {
-                result.createdAt = result.created_at;
-                delete result.created_at;
-                result.updatedAt = result.updated_at;
-                delete result.updated_at;
-                statEmitter.emit('newUser');
-                
-                return {
-                    ...result,
-                    accessToken: jwt.sign({ id: result.id, type: result.type }, process.env.JWT_SECRET),
-                };
+                return result;
             })
         },
         update: async (id, userDTO) => {
@@ -171,7 +162,6 @@ const database = {
             const [odds] = await db('odds').where('id', id);
 
             if (!odds) {
-                console.log('odds error');
                 return {
                     status: 404,
                     error: 'Odds not found'

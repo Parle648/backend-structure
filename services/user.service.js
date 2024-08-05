@@ -1,5 +1,6 @@
 const database = require("../db/db");
 const createErrorObject = require("../helpers/createErrorObject");
+const jwt = require("jsonwebtoken");
 
 const userService = {
     getUser: async (req, res, id) => {
@@ -20,10 +21,18 @@ const userService = {
             req.body.balance = 0;
             
             const user = await database.user.create(req.body);
+
+            if (!user.status) {
+                user.createdAt = user.created_at;
+                delete user.created_at;
+                user.updatedAt = user.updated_at;
+                delete user.updated_at;
+                user.accessToken = jwt.sign({ id: user.id, type: user.type }, process.env.JWT_SECRET)
+            }
     
             return user.status >= 400 
-            ? res.status(404).send({error: user.error}) 
-            : res.send({...user});
+             ? res.status(404).send({error: user.error}) 
+             : res.send({...user});
         } catch (error) {
             const errorData = createErrorObject(error);
 
@@ -33,8 +42,6 @@ const userService = {
     updateUser: async (req, res) => {
         try {
             const updatedUser = await database.user.update(req.params.id, req.body);
-
-            console.log(updatedUser);
 
             return updatedUser.status >= 400
               ? res.status(updatedUser.status).send({error: updatedUser.error})
