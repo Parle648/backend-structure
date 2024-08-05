@@ -11,6 +11,7 @@ const userService = require("../services/user.service");
 const eventService = require("../services/event.service");
 const betService = require("../services/bet.service");
 const transactionService = require("../services/transaction.service");
+const stats = require("../services/stats.service");
 
 const applicationApi = (Router) => {
     const apiRouter = Router();
@@ -47,7 +48,7 @@ const applicationApi = (Router) => {
 
     apiRouter.use(
         API_PATHS.STATS_ROUTE,
-        getStats(Router)
+        getStats(Router, stats.get)
     )
 
     apiRouter.use(
