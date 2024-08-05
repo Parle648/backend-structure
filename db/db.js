@@ -16,8 +16,6 @@ const database = {
                     };
                 };
 
-                console.log(result);
-
                 return result;
             }); 
         },
