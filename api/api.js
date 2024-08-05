@@ -10,6 +10,7 @@ const postTransaction = require("./transaction/postTransaction");
 const userService = require("../services/user.service");
 const eventService = require("../services/event.service");
 const betService = require("../services/bet.service");
+const transactionService = require("../services/transaction.service");
 
 const applicationApi = (Router) => {
     const apiRouter = Router();
@@ -51,7 +52,7 @@ const applicationApi = (Router) => {
 
     apiRouter.use(
         API_PATHS.TRANSACTION_ROUTE,
-        postTransaction(Router)
+        postTransaction(Router, transactionService.postTransacrtion)
     )
 
     return apiRouter
