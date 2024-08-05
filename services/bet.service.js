@@ -2,11 +2,6 @@ const winston = require("winston");
 const database = require("../db/db");
 const jwt = require("jsonwebtoken");
 
-const JWT_DATA = {
-    type: "client",
-    id: "0f290598-1b54-4a36-8c58-33caa7d08b5f"
-}
-
 const logger = winston.createLogger({
     transports: [new winston.transports.Console()],
 });
@@ -14,17 +9,10 @@ const logger = winston.createLogger({
 const betService = {
     post: async (req, res) => {
         let token = req.headers['authorization'].replace('Bearer ', '');
-        var tokenPayload = jwt.verify(token, process.env.JWT_SECRET);
+        var tokenPayload = jwt.decode(token, process.env.JWT_SECRET);
 
         let userId = tokenPayload.id;
         try {
-            // todo middleware
-            req.body.event_id = req.body.eventId;
-            req.body.bet_amount = req.body.betAmount;
-            delete req.body.eventId;
-            delete req.body.betAmount;
-            req.body.user_id = userId;
-
             const bodyDTO = req.body;
             
             const user = await database.user.getOne(bodyDTO.user_id)
