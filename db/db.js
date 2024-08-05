@@ -42,8 +42,13 @@ const database = {
         }
     },
     event: {
+        getOne: async (id) => {
+            return await db('event').where('id', id)
+        },
         post: async (eventDTO) => {
+            // todo 
             return db("odds").insert(eventDTO.odds).returning("*").then(([odds]) => {
+                // * refactoring
                 delete eventDTO.odds;
                 eventDTO.away_team = eventDTO.awayTeam;
                 eventDTO.home_team = eventDTO.homeTeam;
@@ -56,6 +61,7 @@ const database = {
                     ...eventDTO,
                     odds_id: odds.id
                 }).returning("*").then(([event]) => {
+                    // * refactoring
                     statEmitter.emit('newEvent');
 
                     ['bet_amount', 'event_id', 'away_team', 'home_team', 'odds_id', 'start_at', 'updated_at', 'created_at'].forEach(whatakey => {
@@ -89,6 +95,7 @@ const database = {
             try {
                 const bets = await db('bet').where('event_id', eventId).andWhere('win', null);
         
+                // * refactoring
                 const [w1, w2] = eventDTO.score.split(":").map(Number);
                 let result;
                 if (w1 > w2) {
@@ -112,7 +119,8 @@ const database = {
                         await db('bet').where('id', bet.id).update({ win: false });
                     }
                 }));
-        
+
+                // * refactoring        
                 const transformKeys = (event) => {
                     const newEvent = {};
                     ['bet_amount', 'event_id', 'away_team', 'home_team', 'odds_id', 'start_at', 'updated_at', 'created_at'].forEach(key => {
@@ -134,90 +142,21 @@ const database = {
         }
     },
     bet: {
-        post: async (bodyDTO, eventId) => {
-            const userId = bodyDTO.user_id;
-
+        post: async (bodyDTO, multiplier, event, user) => {
             try {
-                const users = await db.select().table('user');
-                const user = users.find(u => u.id == userId);
-                
-                if (!user) {
-                    return {
-                        status: 400,
-                        error: 'User does not exist'
-                    }
-                }
-
-                if (+user.balance < +bodyDTO.bet_amount) {
-                    return {
-                        status: 400,
-                        error: 'Not enough balance'
-                    }
-                }
-                
-                const [event] = await db('event').where('id', eventId);
-                
-                if (!event) {
-                    return {
-                        status: 404,
-                        error: 'Event not found'
-                    }
-                }
-                
-                const [odds] = await db('odds').where('id', event.odds_id);
-                
-                if (!odds) {
-                    console.log('odds error');
-                    return {
-                        status: 404,
-                        error: 'Odds not found'
-                    }
-                }
-                
-                let multiplier;
-                switch (bodyDTO.prediction) {
-                    case 'w1':
-                        multiplier = odds.home_win;
-                        break;
-                    case 'w2':
-                        multiplier = odds.away_win;
-                        break;
-                    case 'x':
-                        multiplier = odds.draw;
-                        break;
-                    default:
-                        return {
-                            status: 404,
-                            error: 'Invalid prediction value'
-                        }
-                }
-                
                 const [bet] = await db('bet').insert({
                     ...bodyDTO,
                     multiplier,
                     event_id: event.id
                 }).returning('*');
-                
+
                 const currentBalance = user.balance - bodyDTO.bet_amount;
+
                 if (currentBalance) {
-                    await db('user').where('id', userId).update({ balance: currentBalance });
-                } else {
-                    return {
-                        status: 400,
-                        error: 'Not enough balance'
-                    }
+                    statEmitter.emit('newBet');
                 }
-                
-                statEmitter.emit('newBet');
-                
-                ['bet_amount', 'event_id', 'away_team', 'home_team', 'odds_id', 'start_at', 'updated_at', 'created_at', 'user_id'].forEach(key => {
-                    const index = key.indexOf('_');
-                    const newKey = key.replace('_', '').split('').map((char, idx) => (idx === index ? char.toUpperCase() : char)).join('');
-                    bet[newKey] = bet[key];
-                    delete bet[key];
-                });
-                
-                return ({ ...bet, currentBalance });
+
+                return bet;
             } catch (error) {
                 console.error(error);
                 return {
@@ -225,6 +164,21 @@ const database = {
                     error: 'Internal Server Error'
                 }
             }
+        }
+    },
+    odds: {
+        getOne: async (id) => {
+            const [odds] = await db('odds').where('id', id);
+
+            if (!odds) {
+                console.log('odds error');
+                return {
+                    status: 404,
+                    error: 'Odds not found'
+                }
+            }
+
+            return odds
         }
     },
     transaction: {
