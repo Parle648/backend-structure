@@ -5,6 +5,7 @@ var ee = require('events');
 const db = knex(dbConfig.development);
 var statEmitter = new ee();
 const createErrorObject = require("../helpers/createErrorObject");
+const { error } = require("console");
 
 const database = {
     user: {
@@ -230,6 +231,42 @@ const database = {
                     error: 'Internal Server Error'
                 }
             }
+        }
+    },
+    transaction: {
+        post: async (transactionDTO) => {
+            return db("user").where('id', transactionDTO.user_id).then(([user]) => {
+                if(!user) {
+                    return {
+                        status: 400,
+                        error: 'User does not exist'
+                    }
+                }
+                return db("transaction").insert(transactionDTO).returning("*").then(([result]) => {
+                var currentBalance = transactionDTO.amount + user.balance;
+                return db("user").where('id', transactionDTO.user_id).update('balance', currentBalance).then(() => {
+                    ['user_id', 'card_number', 'created_at', 'updated_at'].forEach(whatakey => {
+                    var index = whatakey.indexOf('_');
+                    var newKey = whatakey.replace('_', '');
+                    newKey = newKey.split('')
+                    newKey[index] = newKey[index].toUpperCase();
+                    newKey = newKey.join('');
+                    result[newKey] = result[whatakey];
+                    delete result[whatakey];
+                    })
+                    return { 
+                        ...result,
+                        currentBalance,
+                    };
+                });
+                });
+            }).catch(err => {
+                console.log(err);
+                return {
+                    status: 500,
+                    error: 'Internal Server Error'
+                }
+            });
         }
     }
 }
