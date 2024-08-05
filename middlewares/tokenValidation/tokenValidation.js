@@ -5,7 +5,7 @@ const tokenValidation = (type) => {
     return (req, res, next) => {
         let token = req.headers[`authorization`];
         let tokenPayload;
-    
+
         if(!token) {
             return res.status(401).send({ error: 'Not Authorized' });
         }
@@ -20,7 +20,7 @@ const tokenValidation = (type) => {
         } catch (err) {
             return res.status(401).send({ error: 'Not Authorized' });
         }
-    
+
         if(type == TOKEN_VALIDATION_TYPE.ORDINARY && req.params.id !== tokenPayload.id) {
             return res.status(401).send({ error: 'UserId mismatch' });
         }

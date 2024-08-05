@@ -1,4 +1,5 @@
 const database = require("../db/db");
+const createErrorObject = require("../helpers/createErrorObject");
 
 const userService = {
     getUser: async (req, res, id) => {
@@ -24,22 +25,24 @@ const userService = {
             ? res.status(404).send({error: user.error}) 
             : res.send({...user});
         } catch (error) {
-            console.log(error);
-            res.status(500).send("Internal Server Error");
-            return;
+            const errorData = createErrorObject(error);
+
+            return res.status(errorData.status).send({error: errorData.error});
         }
     },
     updateUser: async (req, res) => {
         try {
             const updatedUser = await database.user.update(req.params.id, req.body);
 
-            return updatedUser.error === undefined
-              ? res.send(updatedUser.result) 
-              : res.send({status: updatedUser.status, error: updatedUser.error});
+            console.log(updatedUser);
+
+            return updatedUser.status >= 400
+              ? res.status(updatedUser.status).send({error: updatedUser.error})
+              : res.send(updatedUser) ;
         } catch (error) {
-            console.log(error);
-            res.status(500).send("Internal Server Error");
-            return;
+            const errorData = createErrorObject(error);
+
+            return res.status(errorData.status).send({error: errorData.error});
         }
     }
 }

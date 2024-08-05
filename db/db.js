@@ -4,8 +4,6 @@ var jwt = require("jsonwebtoken");
 var ee = require('events');
 const db = knex(dbConfig.development);
 var statEmitter = new ee();
-const createErrorObject = require("../helpers/createErrorObject");
-const { error } = require("console");
 
 const database = {
     user: {
@@ -17,6 +15,8 @@ const database = {
                         error: 'User not found'
                     };
                 };
+
+                console.log(result);
 
                 return result;
             }); 
@@ -33,18 +33,14 @@ const database = {
                     ...result,
                     accessToken: jwt.sign({ id: result.id, type: result.type }, process.env.JWT_SECRET),
                 };
-            }).catch(err => {
-                createErrorObject(err)
-            });
+            })
         },
         update: async (id, userDTO) => {
             return db("user").where('id', id).update(userDTO).returning("*").then(([result]) => {
                 return { 
                     ...result,
                 };
-            }).catch(err => {
-                createErrorObject(err)
-            });
+            })
         }
     },
     event: {
