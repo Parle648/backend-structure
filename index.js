@@ -3,9 +3,23 @@ var ee = require('events');
 
 const applicationApi = require("./api/api");
 const validateEnv = require("./helpers/validateEnv");
+const gracefulShutdown = require("./services/shotdawn");
 var app = express();
 
 validateEnv();
+
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+  gracefulShutdown();
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled rejection at:', promise, 'reason:', reason);
+  gracefulShutdown();
+});
 
 var port = 4066;
 
