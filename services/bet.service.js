@@ -1,13 +1,12 @@
-const winston = require("winston");
 const database = require("../db/db");
 const jwt = require("jsonwebtoken");
-
-const logger = winston.createLogger({
-    transports: [new winston.transports.Console()],
-});
+const logger = require("../helpers/logger")
 
 const betService = {
     post: async (req, res) => {
+        const start = Date.now()
+        let fullUrl = req. protocol + '://' + req. get('host') + req. originalUrl;
+        let status;
         let token = req.headers['authorization'].replace('Bearer ', '');
         var tokenPayload = jwt.decode(token, process.env.JWT_SECRET);
 
@@ -69,6 +68,12 @@ const betService = {
                 delete postedBet[key];
             });
 
+            if (postedBet.status) {
+                status = createdEvent.status
+            } else {
+                status = 201
+            }
+
             return postedBet.status >= 400 
               ? res.status(postedBet.status).send({error: postedBet.error})
               : res.send({ ...postedBet, currentBalance })
@@ -76,6 +81,11 @@ const betService = {
             console.error(err);
             res.status(500).send("Internal Server Error");
             return;
+        } finally {
+            logger.info(`URL: ${fullUrl},
+            method: getUser,
+            time: ${Date.now() - start}ms, 
+            HTTP code: ${status || 400}`)
         }
     }
 }
