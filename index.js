@@ -2,7 +2,10 @@ var express = require("express");
 var ee = require('events');
 
 const applicationApi = require("./api/api");
+const validateEnv = require("./helpers/validateEnv");
 var app = express();
+
+validateEnv();
 
 var port = 4066;
 
