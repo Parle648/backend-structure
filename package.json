@@ -1,11 +1,11 @@
 {
-  "name": "hw-backend-stucture",
+  "name": "backend-stucture",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "docker:dev:db": "docker compose up -d hw_db",
+    "docker:dev:db": "docker compose up -d db",
     "docker:build": "docker compose build",
     "generate:migration": "knex migrate:make",
     "generate:seed": "knex seed:make",
@@ -13,7 +13,7 @@
     "seed": "knex seed:run",
     "reset:db": "knex migrate:rollback && npm run migrate:latest && npm run seed",
     "test": "npm run reset:db && jest ./tests/index.test.js --forceExit --detectOpenHandles",
-    "docker:test:db": "docker compose -f docker-compose.test.yml up -d hw_db_test",
+    "docker:test:db": "docker compose -f docker-compose.test.yml up -d db_test",
     "docker:test": "docker compose -f docker-compose.test.yml up hm_test"
   },
   "author": "",

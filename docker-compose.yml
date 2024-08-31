@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  hw_db:
+  db:
     image: postgres:12-alpine
     container_name: backend_structure_db
     environment:
